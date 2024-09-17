@@ -1,5 +1,8 @@
 🍔 Swiggy App Deployment with GitHub Actions 🍔
+
+
 Welcome to the future of deployment! Today, we’ll be launching the Swiggy application using the power of GitHub Actions as our CI/CD tool — ditching Jenkins and CircleCI for something sleeker, faster, and more efficient! 💥
+
 
 Ready to automate your infrastructure and deliver code like a boss? Let's dive in!
 
