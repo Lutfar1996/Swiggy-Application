@@ -23,6 +23,6 @@ jobs:
           docker build -t swiggy-clone .
           docker tag swiggy-clone lutfar1996/swiggy-clone:v1
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/swiggy-clone:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/swiggy-clone:v1
         env:
           DOCKER_CLI_ACI: 1
