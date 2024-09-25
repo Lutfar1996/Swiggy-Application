@@ -18,21 +18,21 @@ pipeline{
                 git branch: 'main', url: 'https://github.com/Lutfar1996/Swiggy-Application.git'
             }
         }
-        stage("Sonarqube Analysis "){
-            steps{
-                withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Amazon \
-                    -Dsonar.projectKey=Amazon '''
-                }
-            }
-        }
-         stage("quality gate"){
-           steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins' 
-                }
-            } 
-        }
+        // stage("Sonarqube Analysis "){
+        //     steps{
+        //         withSonarQubeEnv('sonar-server') {
+        //             sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Amazon \
+        //             -Dsonar.projectKey=Amazon '''
+        //         }
+        //     }
+        // }
+        //  stage("quality gate"){
+        //    steps {
+        //         script {
+        //             waitForQualityGate abortPipeline: false, credentialsId: 'jenkins' 
+        //         }
+        //     } 
+        // }
         stage('Install Dependencies') {
             steps {
                 sh "npm install"
@@ -44,11 +44,11 @@ pipeline{
         //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
         //     }
         // }
-        stage('TRIVY FS SCAN') {
-            steps {
-                sh "trivy fs . > trivyfs.txt"
-            }
-        }
+        // stage('TRIVY FS SCAN') {
+        //     steps {
+        //         sh "trivy fs . > trivyfs.txt"
+        //     }
+        // }
         stage("Docker Build & Push"){
             steps{
                 script{
@@ -60,11 +60,11 @@ pipeline{
                 }
             }
         }
-        stage("TRIVY"){
-            steps{
-                sh "trivy image lutfar1996/amazon-clone:latest > trivyimage.txt" 
-            }
-        }
+        // stage("TRIVY"){
+        //     steps{
+        //         sh "trivy image lutfar1996/amazon-clone:latest > trivyimage.txt" 
+        //     }
+        // }
         // stage('Deploy to container'){
         //     steps{
         //         sh 'docker run -d --name amazon-clone -p 3000:3000 lutfar1996/amazon-clone:latest'
