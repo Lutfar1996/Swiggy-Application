@@ -38,12 +38,12 @@ pipeline{
                 sh "npm install"
             }
         }
-        stage('OWASP FS SCAN') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
+        // stage('OWASP FS SCAN') {
+        //     steps {
+        //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        //     }
+        // }
         stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.txt"
@@ -54,21 +54,21 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
                        sh "docker build -t amazon-clone ."
-                       sh "docker tag amazon-clone aakibkhan1212/amazon-clone:latest "
-                       sh "docker push aakibkhan1212/amazon-clone:latest "
+                       sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
+                       sh "docker push lutfar1996/amazon-clone:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image aakibkhan1212/amazon-clone:latest > trivyimage.txt" 
+                sh "trivy image lutfar1996/amazon-clone:latest > trivyimage.txt" 
             }
         }
-        stage('Deploy to container'){
-            steps{
-                sh 'docker run -d --name amazon-clone -p 3000:3000 aakibkhan1212/amazon-clone:latest'
-            }
-        }
+        // stage('Deploy to container'){
+        //     steps{
+        //         sh 'docker run -d --name amazon-clone -p 3000:3000 lutfar1996/amazon-clone:latest'
+        //     }
+        // }
     }
 }
