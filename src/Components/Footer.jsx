@@ -39,8 +39,8 @@ function Footer() {
                 </div>
                 <div style={{color:"#9e9e9e"}}>
                     <h5 style={{color:"white"}}>We deliver to:</h5>
-                    <p>Bangalore</p>
-                    <p>Gurgaon</p>
+                    <p>Chittagong</p>
+                    <p>Dhaka</p>
                     <p>Hyderabad</p>
                     <p>Delhi</p>
                     <p>Mumbai</p>
