@@ -70,5 +70,16 @@ pipeline{
         //         sh 'docker run -d --name amazon-clone -p 3000:3000 lutfar1996/amazon-clone:latest'
         //     }
         // }
+
+        stage('Deploy to EKS') {
+            steps {
+                withAWS(credentials: 'aws-credentials', region: 'us-east-2') {
+                    sh 'aws eks --region us-east-2 update-kubeconfig --name EKS_CLOUD'
+                    sh 'kubectl apply -f deployment-service.yml'
+                    
+                }
+            }
+        }
+
     }
 }
