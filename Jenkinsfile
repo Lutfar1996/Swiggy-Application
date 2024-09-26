@@ -8,9 +8,9 @@ pipeline{
     //     SCANNER_HOME=tool 'sonar-scanner'
     // }
     //
-       environment {
-          imageTag ="lutfar1996/swiggy-app:${env.BUILD_ID}" 
-       }
+    //    environment {
+    //       imageTag ="lutfar1996/swiggy-app:${env.BUILD_ID}" 
+    //    }
     stages {
         stage('clean workspace'){
             steps{
@@ -57,6 +57,7 @@ pipeline{
         stage("Docker Build & Push"){
             steps{
                 script{
+                   def imageTag = "lutfar1996/swiggy-app:${env.BUILD_ID}"
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){  
                        
                        sh "docker build -t ${imageTag} ."
@@ -79,6 +80,7 @@ pipeline{
 
         stage('Deploy to EKS') {
             steps {
+                def imageTag = "lutfar1996/swiggy-app:${env.BUILD_ID}"
                 withAWS(credentials: 'aws', region: 'us-west-1') {
                     sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
                     sh 'kubectl set image deployment/swiggy swiggy=${imageTag}'
