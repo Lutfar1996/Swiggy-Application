@@ -60,5 +60,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Get Load Balancer DNS') {
+            steps {
+                withAWS(credentials: 'aws', region: 'us-west-1') {
+                sh 'kubectl get svc swiggy-service -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"'
+        }
+    }
+}
     }
 }
