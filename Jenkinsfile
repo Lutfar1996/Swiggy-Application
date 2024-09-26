@@ -4,9 +4,9 @@ pipeline{
         jdk 'jdk17'
         nodejs 'node16'
     }
-    environment {
-        SCANNER_HOME=tool 'sonar-scanner'
-    }
+    // environment {
+    //     SCANNER_HOME=tool 'sonar-scanner'
+    // }
     stages {
         stage('clean workspace'){
             steps{
@@ -35,6 +35,7 @@ pipeline{
         // }
         stage('Install Dependencies') {
             steps {
+                sh "npm update"
                 sh "npm install"
             }
         }
@@ -71,15 +72,15 @@ pipeline{
         //     }
         // }
 
-        stage('Deploy to EKS') {
-            steps {
-                withAWS(credentials: 'aws-credentials', region: 'us-east-2') {
-                    sh 'aws eks --region us-east-2 update-kubeconfig --name EKS_CLOUD'
-                    sh 'kubectl apply -f deployment-service.yml'
+        // stage('Deploy to EKS') {
+        //     steps {
+        //         withAWS(credentials: 'aws-credentials', region: 'us-east-2') {
+        //             sh 'aws eks --region us-east-2 update-kubeconfig --name EKS_CLOUD'
+        //             sh 'kubectl apply -f deployment-service.yml'
                     
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
     }
 }
