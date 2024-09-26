@@ -14,10 +14,10 @@ spec:
         app: swiggy
     spec:
       containers:
-      - name: swiggy
-        image: lutfar1996/swiggy-clone:latest
-        ports:
-        - containerPort: 3000   # Use port 3000
+        - name: swiggy
+          image: lutfar1996/amazon-clone:latest
+          ports:
+            - containerPort: 3000 # Use port 3000
 
 ---
 apiVersion: v1
@@ -28,7 +28,7 @@ spec:
   selector:
     app: swiggy
   ports:
-  - protocol: TCP
-    port: 80                 # Expose port 80
-    targetPort: 3000
+    - protocol: TCP
+      port: 80 # Expose port 80
+      targetPort: 3000
   type: LoadBalancer

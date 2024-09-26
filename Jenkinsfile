@@ -34,12 +34,12 @@ pipeline{
         //         }
         //     } 
         // }
-        stage('Install Dependencies') {
-            steps {
-                sh "npm update"
-                sh "npm install"
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh "npm update"
+        //         sh "npm install"
+        //     }
+        // }
         // stage('OWASP FS SCAN') {
         //     steps {
         //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
@@ -51,17 +51,17 @@ pipeline{
         //         sh "trivy fs . > trivyfs.txt"
         //     }
         // }
-        stage("Docker Build & Push"){
-            steps{
-                script{
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build -t amazon-clone ."
-                       sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
-                       sh "docker push lutfar1996/amazon-clone:latest "
-                    }
-                }
-            }
-        }
+        // stage("Docker Build & Push"){
+        //     steps{
+        //         script{
+        //            withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+        //                sh "docker build -t amazon-clone ."
+        //                sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
+        //                sh "docker push lutfar1996/amazon-clone:latest "
+        //             }
+        //         }
+        //     }
+        // }
         // stage("TRIVY"){
         //     steps{
         //         sh "trivy image lutfar1996/amazon-clone:latest > trivyimage.txt" 
@@ -73,15 +73,15 @@ pipeline{
         //     }
         // }
 
-        // stage('Deploy to EKS') {
-        //     steps {
-        //         withAWS(credentials: 'aws-credentials', region: 'us-east-2') {
-        //             sh 'aws eks --region us-east-2 update-kubeconfig --name EKS_CLOUD'
-        //             sh 'kubectl apply -f deployment-service.yml'
+        stage('Deploy to EKS') {
+            steps {
+                withAWS(credentials: 'aws', region: 'us-west-1') {
+                    sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
+                    sh 'kubectl apply -f deployment-service.yml'
                     
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
 
     }
 }
