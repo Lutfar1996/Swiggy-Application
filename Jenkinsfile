@@ -81,8 +81,9 @@ pipeline{
             steps {
                 withAWS(credentials: 'aws', region: 'us-west-1') {
                     sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
-                    sh 'kubectl set image deployment/swiggy swiggy=${imageTag}'
-                    sh 'kubectl apply -f deployment-service.yml'
+                    // sh 'kubectl set image deployment/swiggy swiggy=${imageTag}'
+                    sh "sed 's/PLACEHOLDER/${imageTag}/g' deployment-service.yml | kubectl apply -f -"
+                    // sh 'kubectl apply -f deployment-service.yml'
                     sh "kubectl rollout status deployment/swiggy"
                     
                 }

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: swiggy
-          image: lutfar1996/swiggy-app:latest
+          image: lutfar1996/swiggy-app:PLACEHOLDER
           ports:
             - containerPort: 3000 # Use port 3000
 
