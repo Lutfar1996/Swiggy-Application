@@ -8,9 +8,9 @@ pipeline{
     //     SCANNER_HOME=tool 'sonar-scanner'
     // }
     //
-    //    environment {
-    //       imageTag ="lutfar1996/swiggy-app:${env.BUILD_ID}" 
-    //    }
+       environment {
+          imageTag ="lutfar1996/swiggy-app" 
+       }
     stages {
         stage('clean workspace'){
             steps{
@@ -56,13 +56,11 @@ pipeline{
         // }
         stage("Docker Build & Push"){
             steps{
-                script{
-                   def imageTag = "lutfar1996/swiggy-app:${env.BUILD_ID}"
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){  
-                       
-                       sh "docker build -t ${imageTag} ."
-                    //    sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
-                       sh "docker push ${imageTag} "
+                script {
+                    def imageTagWithBuildId = "${imageTag}:${env.BUILD_ID}" // Construct full image tag
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
+                        sh "docker build -t ${imageTagWithBuildId} ."
+                        sh "docker push ${imageTagWithBuildId}"
                     }
                 }
             }
@@ -80,14 +78,13 @@ pipeline{
 
         stage('Deploy to EKS') {
             steps {
-                script{
-                    def imageTag = "lutfar1996/swiggy-app:${env.BUILD_ID}"
+                 script {
+                    def imageTagWithBuildId = "${imageTag}:${env.BUILD_ID}" // Use the full image tag
                     withAWS(credentials: 'aws', region: 'us-west-1') {
-                    sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
-                    sh 'kubectl set image deployment/swiggy swiggy=${imageTag}'
-                    sh "sed 's|PLACEHOLDER|${imageTag}|g' deployment-service.yml | kubectl apply -f -"
-                    sh "kubectl rollout status deployment/swiggy"
-                    
+                        sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
+                        sh "kubectl set image deployment/swiggy swiggy=${imageTagWithBuildId}"
+                        sh "sed 's|PLACEHOLDER|${imageTagWithBuildId}|g' deployment-service.yml | kubectl apply -f -"
+                        sh "kubectl rollout status deployment/swiggy"
                     }
                 } 
             }
