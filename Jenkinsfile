@@ -80,14 +80,16 @@ pipeline{
 
         stage('Deploy to EKS') {
             steps {
-                def imageTag = "lutfar1996/swiggy-app:${env.BUILD_ID}"
-                withAWS(credentials: 'aws', region: 'us-west-1') {
+                script{
+                    def imageTag = "lutfar1996/swiggy-app:${env.BUILD_ID}"
+                    withAWS(credentials: 'aws', region: 'us-west-1') {
                     sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
                     sh 'kubectl set image deployment/swiggy swiggy=${imageTag}'
                     sh "sed 's|PLACEHOLDER|${imageTag}|g' deployment-service.yml | kubectl apply -f -"
                     sh "kubectl rollout status deployment/swiggy"
                     
-                }
+                    }
+                } 
             }
         }
 
