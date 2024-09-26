@@ -34,12 +34,12 @@ pipeline{
         //         }
         //     } 
         // }
-        // stage('Install Dependencies') {
-        //     steps {
-        //         sh "npm update"
-        //         sh "npm install"
-        //     }
-        // }
+        stage('Install Dependencies') {
+            steps {
+                // sh "npm update"
+                sh "npm install"
+            }
+        }
         // stage('OWASP FS SCAN') {
         //     steps {
         //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
@@ -51,17 +51,18 @@ pipeline{
         //         sh "trivy fs . > trivyfs.txt"
         //     }
         // }
-        // stage("Docker Build & Push"){
-        //     steps{
-        //         script{
-        //            withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-        //                sh "docker build -t amazon-clone ."
-        //                sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
-        //                sh "docker push lutfar1996/amazon-clone:latest "
-        //             }
-        //         }
-        //     }
-        // }
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){  
+                       def imageTag ="lutfar1996/swiggy-app:${env.BUILD_ID}" 
+                       sh "docker build -t ${imageTag} ."
+                    //    sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
+                       sh "docker push ${imageTag} "
+                    }
+                }
+            }
+        }
         // stage("TRIVY"){
         //     steps{
         //         sh "trivy image lutfar1996/amazon-clone:latest > trivyimage.txt" 
@@ -77,6 +78,7 @@ pipeline{
             steps {
                 withAWS(credentials: 'aws', region: 'us-west-1') {
                     sh 'aws eks --region us-west-1 update-kubeconfig --name EKS_CLOUD'
+                    sh 'kubectl set image deployment/swiggy swiggy=${imageTag}'
                     sh 'kubectl apply -f deployment-service.yml'
                     
                 }
