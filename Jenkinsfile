@@ -8,6 +8,9 @@ pipeline{
     //     SCANNER_HOME=tool 'sonar-scanner'
     // }
     //
+       environment {
+          imageTag ="lutfar1996/swiggy-app:${env.BUILD_ID}" 
+       }
     stages {
         stage('clean workspace'){
             steps{
@@ -55,7 +58,7 @@ pipeline{
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){  
-                       def imageTag ="lutfar1996/swiggy-app:${env.BUILD_ID}" 
+                       
                        sh "docker build -t ${imageTag} ."
                     //    sh "docker tag amazon-clone lutfar1996/amazon-clone:latest "
                        sh "docker push ${imageTag} "
