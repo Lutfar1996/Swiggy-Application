@@ -1,0 +1,44 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches:
+      - main # Change this to your default branch if it's different
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }} # Set your AWS region here
+
+      - name: Log in to Amazon ECR Public
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public # Set to 'public' for Amazon ECR Public
+
+      - name: Build the Docker image
+        run: |
+          docker build -t swiggy-app .  # Change 'swiggy-app' to your desired image name
+
+      - name: Tag the Docker image
+        run: |
+          IMAGE_URI=public.ecr.aws/k7m2z4k7/swiggy-app:latest  # Your ECR public repository
+          docker tag swiggy-app $IMAGE_URI
+
+      - name: Push the Docker image to ECR
+        run: |
+          IMAGE_URI=public.ecr.aws/k7m2z4k7/swiggy-app:latest  # Your ECR public repository
+          docker push $IMAGE_URI
