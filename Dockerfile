@@ -13,7 +13,7 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the React appp
+# Build the React apppp
 RUN npm run build
 
 # Expose port 3000 (or the port your app is configured to listen on))
