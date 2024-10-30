@@ -6,7 +6,7 @@ on:
       - main # Change this to your default branch if it's different
 
 jobs:
-  # Build and Push to ECR Job
+  # Build and Push to ECR Jobb
   build:
     runs-on: ubuntu-latest
 
