@@ -6,7 +6,7 @@ on:
       - main # Change this to your default branch if it's different
 
 jobs:
-  # Build and Push to ECR Jobb
+  # Build and Push to ECR Job
   build:
     runs-on: ubuntu-latest
 
@@ -72,6 +72,9 @@ jobs:
 
           # Update the task definition with the new image URI
           NEW_TASK_DEF=$(echo $TASK_DEF_JSON | jq --arg IMAGE_URI "$IMAGE_URI" '.taskDefinition.containerDefinitions[0].image = $IMAGE_URI')
+
+          # Print the new task definition JSON for debugging
+          echo "New Task Definition JSON: $NEW_TASK_DEF"
 
           # Register a new revision of the task definition
           NEW_TASK_DEF_ARN=$(echo $NEW_TASK_DEF | aws ecs register-task-definition \
