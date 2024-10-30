@@ -63,10 +63,14 @@ jobs:
       - name: Update ECS Service with New Image
         env:
           IMAGE_URI: ${{ env.IMAGE_URI }}
-          CLUSTER_NAME: swiggy-app # Replace with your ECS cluster name
-          SERVICE_NAME: swiggy-app-service # Replace with your ECS service name
-          TASK_DEFINITION: swiggy-app-task # Replace with your ECS task definition name
+          CLUSTER_NAME: swiggy-app
+          SERVICE_NAME: swiggy-app-service
+          TASK_DEFINITION: swiggy-app-task
+
         run: |
+          # Install jq
+          sudo apt-get install -y jq
+
           # Fetch the current task definition
           TASK_DEF_JSON=$(aws ecs describe-task-definition --task-definition $TASK_DEFINITION)
 
@@ -75,10 +79,10 @@ jobs:
 
           # Print the new task definition JSON for debugging
           echo "New Task Definition JSON: $NEW_TASK_DEF"
+          echo $NEW_TASK_DEF | jq . || { echo "Invalid JSON"; exit 1; }
 
           # Register a new revision of the task definition
-          NEW_TASK_DEF_ARN=$(echo $NEW_TASK_DEF | aws ecs register-task-definition \
-            --cli-input-json file:///dev/stdin | jq -r '.taskDefinition.taskDefinitionArn')
+          NEW_TASK_DEF_ARN=$(echo $NEW_TASK_DEF | aws ecs register-task-definition --cli-input-json file:///dev/stdin | jq -r '.taskDefinition.taskDefinitionArn')
 
           # Update the ECS service to use the new task definition revision
           aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $NEW_TASK_DEF_ARN
