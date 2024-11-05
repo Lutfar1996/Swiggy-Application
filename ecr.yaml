@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template to set up SNS notifications for ECR image push events
+
+Resources:
+  # Create an SNS Topic
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ECRImagePushTopic
+
+  # Subscribe your email to the SNS Topic
+  SNSTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref SNSTopic
+      Protocol: email
+      Endpoint: "reza.ete96@gmail.com" # Your email address
+
+  # Create an EventBridge Rule to listen to ECR image push events
+  ECRImagePushRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: ECRImagePushRule
+      Description: "Rule to trigger SNS notification on ECR image push"
+      EventPattern:
+        source:
+          - "aws.ecr"
+        detail-type:
+          - "ECR Image Action"
+        detail:
+          action-type:
+            - "PUSH"
+          repository-name:
+            - "swiggy-repo" # Your ECR repository name
+      Targets:
+        - Arn: !Ref SNSTopic
+          Id: "ECRPushNotification"
+
+  # Grant permissions for EventBridge to publish to SNS
+  PermissionForEventBridgeToSNS:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref SNSTopic
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "events.amazonaws.com"
+            Action: "sns:Publish"
+            Resource: !Ref SNSTopic
+
+Outputs:
+  SNSTopicArn:
+    Description: "The ARN of the SNS topic for ECR image push notifications"
+    Value: !Ref SNSTopic
