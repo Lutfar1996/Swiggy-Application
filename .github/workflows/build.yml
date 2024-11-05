@@ -37,11 +37,11 @@ jobs:
       - name: Tag the Docker image
         run: |
           IMAGE_URI=public.ecr.aws/k7m2z4k7/swiggy-app:latest
-          docker tag swiggy-app $IMAGE_URI
+          docker tag swiggy-repo $IMAGE_URI
 
       - name: Push the Docker image to ECR
         run: |
-          IMAGE_URI=public.ecr.aws/k7m2z4k7/swiggy-app:latest
+          IMAGE_URI=public.ecr.aws/k7m2z4k7/swiggy-repo:latest
           docker push $IMAGE_URI
 
       - name: Set IMAGE_URI for deployment
